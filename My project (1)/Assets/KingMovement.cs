@@ -17,9 +17,11 @@ public class KingMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
             moveDirection = Vector3.right;
 
+        Vector3 newPosition = transform.position + moveDirection * moveDistance;
+        transform.position = newPosition;
+
         if (moveDirection != Vector3.zero)
         {
-            Vector3 newPosition = transform.position + moveDirection * moveDistance;
 
             if (newPosition.x >= -2.5f && newPosition.x <= 2.5f && newPosition.y >= -2.5f && newPosition.y <= 2.5f)
             {
