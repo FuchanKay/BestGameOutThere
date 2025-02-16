@@ -4,9 +4,9 @@
 TagManager:
   serializedVersion: 3
   tags:
-  - rook
-  - bishop
-  - walls
+  - King
+  - Rook
+  - Wall
   layers:
   - Default
   - TransparentFX
