@@ -15,11 +15,17 @@ public class HandlerScript : MonoBehaviour
     public GameObject kingHandler;
     public GameObject wallHandler;
     public GameObject pawn;
+
+    public GameObject blackTile;
+    public GameObject whiteTile;
+    public GameObject mud;
+
+
     private int n = 0;
 
     void Start()
     {
-        //createLevel1();
+        createLevel1();
     }
 
     // Update is called once per frame
@@ -44,12 +50,29 @@ public class HandlerScript : MonoBehaviour
     }
 
     void addGO(GameObject go, int x, int y)
-    {
-        map[x,y] = go;
+    {   
+
+
     }
 
     void createLevel1()
     {
-        addGO(Instantiate(pawn), 4, 4);
+        GameObject tile;
+        for (int i = 0; i < map.GetLength(0); i++)
+        {
+            for (int j = 0; j < map.GetLength(1); j++)
+            {
+                if (i + j % 2 == 0)
+                {
+                    map[i, j] = Instantiate(blackTile);
+                } else
+                {
+                    map[i, j] = Instantiate(whiteTile);
+
+                }
+                map[i, j].transform.position += Vector3.right * i + Vector3.down * j;
+            }
+        }
+        
     }
 }
