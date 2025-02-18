@@ -7,7 +7,6 @@ public class PlayerObj : MonoBehaviour
     public int y;
     public int movingX;
     public int movingY;
-    [SerializeField] private PlayerSprite playerSprite;
     [SerializeField] private Transform transform;
     void Start()
     {

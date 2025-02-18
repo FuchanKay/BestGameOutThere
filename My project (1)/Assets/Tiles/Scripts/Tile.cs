@@ -8,9 +8,9 @@ public class Tile : MonoBehaviour
     
     public void Init(bool isOffSet)
     {
-        int rotation = Random.Range(0, 4);
+        //int rotation = Random.Range(0, 4);
         _renderer.sprite = _whiteTile;
         _renderer.sprite = isOffSet ? _whiteTile : _blackTile;
-        _renderer.transform.rotation = Quaternion.Euler(0, 0, 90 * rotation);
+        //_renderer.transform.rotation = Quaternion.Euler(0, 0, 90 * rotation);
     }
 }

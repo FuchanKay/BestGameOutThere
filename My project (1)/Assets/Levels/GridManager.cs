@@ -29,6 +29,22 @@ public class GridManager : MonoBehaviour
         {
             UpdateTiles12();
         }
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            UpdateTiles3();
+        }
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            UpdateTiles6();
+        }
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            UpdateTiles9();
+        }
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            UpdateTiles0();
+        }
     }
     private void GenerateGrid()
     {
@@ -54,8 +70,52 @@ public class GridManager : MonoBehaviour
     }
     private void UpdateTiles12()
     {
-        _tiles.TryGetValue(new Vector2(_playerObj.x, _playerObj.y), out Tile tile);
-        _playerObj.transform.parent = tile.transform;
-        _playerObj.y++;
+        if (_playerObj.y + 1 < _height)
+        {
+            _tiles.TryGetValue(new Vector2(_playerObj.x, _playerObj.y + 1), out Tile tile);
+            _playerObj.transform.parent = tile.transform;
+            _playerObj.GetComponent<Animator>().Play("MoveUp");
+            _playerObj.transform.position = tile.transform.position;
+            _playerObj.y++;
+        }
+    }
+    private void UpdateTiles3()
+    {
+        if (_playerObj.x + 1 < _width)
+        {
+            _tiles.TryGetValue(new Vector2(_playerObj.x + 1, _playerObj.y), out Tile tile);
+            _playerObj.transform.parent = tile.transform;
+            _playerObj.GetComponent<Animator>().Play("MoveRight");
+            _playerObj.transform.position = tile.transform.position;
+            _playerObj.x++;
+
+        }
+    }
+
+    private void UpdateTiles6()
+    {
+        if (_playerObj.y - 1 >= 0)
+        {
+            _tiles.TryGetValue(new Vector2(_playerObj.x, _playerObj.y - 1), out Tile tile);
+            _playerObj.transform.parent = tile.transform;
+            _playerObj.GetComponent<Animator>().Play("MoveDown");
+            _playerObj.transform.position = tile.transform.position;
+            _playerObj.y--;
+        }
+    }
+    private void UpdateTiles9()
+    {
+        if (_playerObj.x - 1 >= 0)
+        {
+            _tiles.TryGetValue(new Vector2(_playerObj.x - 1, _playerObj.y), out Tile tile);
+            _playerObj.transform.parent = tile.transform;
+            _playerObj.transform.position = tile.transform.position;
+            _playerObj.x--;
+            _playerObj.GetComponent<Animator>().Play("MoveLeft");
+        }
+    }
+    private void UpdateTiles0()
+    {
+
     }
 }
