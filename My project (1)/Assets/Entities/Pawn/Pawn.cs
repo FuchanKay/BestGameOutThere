@@ -1,11 +1,12 @@
-using UnityEditor.U2D.Animation;
+using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.U2D.Animation;
 
-public class PawnBehavior : MonoBehaviour
+public class Pawn : MonoBehaviour
 {
-    public SpriteLibrary lib;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
+    public int x;
+    public int y;
+
     void Start()
     {
         
@@ -14,6 +15,9 @@ public class PawnBehavior : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.V))
+        {
+            this.GetComponent<Animator>().Play("pawn_activation");
+        }
     }
 }

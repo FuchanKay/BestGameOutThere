@@ -3,6 +3,7 @@ using UnityEngine.Tilemaps;
 using UnityEngine.WSA;
 using System.Collections.Generic;
 using System.Collections;
+using Unity.VisualScripting;
 
 public class GridManager : MonoBehaviour
 {
@@ -15,7 +16,7 @@ public class GridManager : MonoBehaviour
 
     //entity handlers
     [SerializeField] private PlayerObj _playerObj;
-    [SerializeField] private PawnHandler _pawnHandler;
+    [SerializeField] private Pawn pawn;
 
     private Dictionary<Vector2, Tile> _tiles = new Dictionary<Vector2, Tile>();
 
@@ -62,15 +63,16 @@ public class GridManager : MonoBehaviour
                 _tiles.Add(new Vector2(x, y), spawnedTile);
             }
         }
-        _tiles.TryGetValue(new Vector2(_playerObj.x, _playerObj.y), out Tile tile);
+        Tile tile = getTile(_playerObj.x, _playerObj.y);
         _playerObj.transform.parent = tile.transform;
 
+        createPawn(4, 4);
 
         _cam.transform.position = new Vector3((float)_width / 2 - 0.5f, (float)_height / 2 - 0.5f, -10);
     }
     private void UpdateTiles12()
     {
-        if (_playerObj.y + 1 < _height)
+        if (canMove12())
         {
             _tiles.TryGetValue(new Vector2(_playerObj.x, _playerObj.y + 1), out Tile tile);
             _playerObj.transform.parent = tile.transform;
@@ -79,11 +81,30 @@ public class GridManager : MonoBehaviour
             _playerObj.y++;
         }
     }
+
+    private bool canMove12()
+    {
+        return _playerObj.y + 1 < _height;
+    }
+    private bool canMove3()
+    {
+        return true;
+    }
+    private bool canMove6()
+    {
+        return true;
+    }
+    private bool canMove9()
+    {
+        return true;
+    }
+
     private void UpdateTiles3()
     {
         if (_playerObj.x + 1 < _width)
         {
             _tiles.TryGetValue(new Vector2(_playerObj.x + 1, _playerObj.y), out Tile tile);
+            if ()
             _playerObj.transform.parent = tile.transform;
             _playerObj.GetComponent<Animator>().Play("MoveRight");
             _playerObj.transform.position = tile.transform.position;
@@ -102,6 +123,7 @@ public class GridManager : MonoBehaviour
             _playerObj.transform.position = tile.transform.position;
             _playerObj.y--;
         }
+
     }
     private void UpdateTiles9()
     {
@@ -117,5 +139,35 @@ public class GridManager : MonoBehaviour
     private void UpdateTiles0()
     {
 
+    }
+    private Tile getTile(int x, int y)
+    {
+        _tiles.TryGetValue(new Vector2(x, y), out Tile tile);
+        return tile;
+    }
+
+    private void createPawn(int x, int y)
+    {
+        Pawn newPawn = Instantiate(pawn);
+        Tile tile = getTile(x, y);
+        newPawn.transform.parent = tile.transform;
+        newPawn.transform.position = tile.transform.position;
+    }
+    private bool hasEntity(Tile tile)
+    {
+        for (int i = 0; i < tile.transform.childCount; i++)
+        {
+            GameObject child = tile.transform.GetChild(i).gameObject;
+            if (isEntity(child))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    private bool isEntity(GameObject obj)
+    {
+        //TODO: add more entities
+        return obj.GetType() == typeof(Pawn);
     }
 }
