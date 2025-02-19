@@ -4,12 +4,14 @@ using UnityEngine.WSA;
 using System.Collections.Generic;
 using System.Collections;
 using Unity.VisualScripting;
+using System.Data;
 
 public class GridManager : MonoBehaviour
 {
     //map settings
     [SerializeField] private int _width, _height;
     [SerializeField] private Tile _tilePrefab;
+    private int _playerStartX, _playerStartY;
 
     //camera
     [SerializeField] private Transform _cam;
@@ -18,34 +20,41 @@ public class GridManager : MonoBehaviour
     [SerializeField] private PlayerObj _playerObj;
     [SerializeField] private Pawn pawn;
 
+    [SerializeField] private GameObject map;
     private Dictionary<Vector2, Tile> _tiles = new Dictionary<Vector2, Tile>();
+
+    private bool canInput = true;
 
     private void Start()
     {
+        _playerStartX = _playerObj.x;
+        _playerStartY = _playerObj.y;
         GenerateGrid();
+        _playerObj.transform.position = getTile(_playerObj.x, _playerObj.y).transform.position;    
     }
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.W))
+        if (Input.GetKeyDown(KeyCode.W) && canInput)
         {
             UpdateTiles12();
         }
-        if (Input.GetKeyDown(KeyCode.D))
+        if (Input.GetKeyDown(KeyCode.D) && canInput)
         {
             UpdateTiles3();
         }
-        if (Input.GetKeyDown(KeyCode.S))
+        if (Input.GetKeyDown(KeyCode.S) && canInput)
         {
             UpdateTiles6();
         }
-        if (Input.GetKeyDown(KeyCode.A))
+        if (Input.GetKeyDown(KeyCode.A) && canInput)
         {
             UpdateTiles9();
         }
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && canInput)
         {
             UpdateTiles0();
         }
+        bool zerozeroHasKing = getTile(0, 0).transform.Find("King");
     }
     private void GenerateGrid()
     {
@@ -54,7 +63,7 @@ public class GridManager : MonoBehaviour
             for (int y = 0; y < _height; y++)
             {
                 var spawnedTile = Instantiate(_tilePrefab, new Vector3(x, y, 0), Quaternion.identity);
-
+                spawnedTile.transform.parent = map.transform;
                 spawnedTile.name = $"Tile {x} {y}";
 
                 var isOffSet = (x + y) % 2 == 0;
@@ -63,10 +72,11 @@ public class GridManager : MonoBehaviour
                 _tiles.Add(new Vector2(x, y), spawnedTile);
             }
         }
-        Tile tile = getTile(_playerObj.x, _playerObj.y);
+        Tile tile = getTile(_playerStartX, _playerStartY);
         _playerObj.transform.parent = tile.transform;
 
         createPawn(4, 4);
+        createPawn(5, 5);
 
         _cam.transform.position = new Vector3((float)_width / 2 - 0.5f, (float)_height / 2 - 0.5f, -10);
     }
@@ -82,29 +92,12 @@ public class GridManager : MonoBehaviour
         }
     }
 
-    private bool canMove12()
-    {
-        return _playerObj.y + 1 < _height;
-    }
-    private bool canMove3()
-    {
-        return true;
-    }
-    private bool canMove6()
-    {
-        return true;
-    }
-    private bool canMove9()
-    {
-        return true;
-    }
 
     private void UpdateTiles3()
     {
         if (_playerObj.x + 1 < _width)
         {
             _tiles.TryGetValue(new Vector2(_playerObj.x + 1, _playerObj.y), out Tile tile);
-            if ()
             _playerObj.transform.parent = tile.transform;
             _playerObj.GetComponent<Animator>().Play("MoveRight");
             _playerObj.transform.position = tile.transform.position;
@@ -140,6 +133,25 @@ public class GridManager : MonoBehaviour
     {
 
     }
+
+    private bool canMove12()
+    {
+        Tile tile = getTile(_playerObj.x, _playerObj.y);
+        bool hasEntity = this.hasEntity(tile);
+        return _playerObj.y + 1 < _height && !hasEntity;
+    }
+    private bool canMove3()
+    {
+        return true;
+    }
+    private bool canMove6()
+    {
+        return true;
+    }
+    private bool canMove9()
+    {
+        return true;
+    }
     private Tile getTile(int x, int y)
     {
         _tiles.TryGetValue(new Vector2(x, y), out Tile tile);
@@ -149,6 +161,7 @@ public class GridManager : MonoBehaviour
     private void createPawn(int x, int y)
     {
         Pawn newPawn = Instantiate(pawn);
+        newPawn.name = "pawn";
         Tile tile = getTile(x, y);
         newPawn.transform.parent = tile.transform;
         newPawn.transform.position = tile.transform.position;
@@ -167,7 +180,9 @@ public class GridManager : MonoBehaviour
     }
     private bool isEntity(GameObject obj)
     {
+        Debug.Log(obj.name);
         //TODO: add more entities
-        return obj.GetType() == typeof(Pawn);
+        return obj.name == "pawn";
     }
+
 }
